@@ -15,7 +15,6 @@ from matplotlib import colors
 
 from random import choice
 from collections import deque, defaultdict
-from heapq import nsmallest
 import numpy as np
 
 def create_maze(size, algo=wilson):
@@ -146,17 +145,18 @@ def wall(grid, path=None):
 
 def tremaux(grid, path=None):
     global marks
-    dirs = [(1, 0,), (0, 1,), (-1, 0,), (0, -1,)]
     y1 = x1 = -1
     y2 = x2 = 1
     marks = {(y2, x2,):{(-1,-1,):1, (1,2,):0, (2, 2,):0, (2,1,):0}}
     goal = len(grid) - 2
     
-    def dist(arg):
-        return abs(goal - arg[0]) + abs(goal - arg[1])
+    def dist(coords):
+        mdirs = max(abs(coords[0]-goal), abs(coords[1]-goal))
+        mdiag = (2**0.5-1) * min(abs(coords[0]-goal),abs(coords[1]-goal))
+        return mdirs + mdiag
     
     while y2 != goal or x2 != goal:
-        neigh = [(y2+dy, x2+dx) for dy, dx in dirs if not grid[y2+dy, x2+dx]]
+        neigh = neighbors(y2, x2, grid)
         if (y2, x2,) in marks:
             # old junction
             old = marks[(y2, x2,)]

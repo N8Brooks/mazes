@@ -14,22 +14,32 @@ import matplotlib as mpl
 from matplotlib import animation
 from matplotlib import colors
 
-algorithms = [wilson, backtracker, kruskal, prim, 
-              modified_prim, tree, eller, sidewinder, division, ]
+algorithms = {wilson:'Wilson\'s Algorithm', 
+              backtracker:'Backtracker', 
+              kruskal:'Randomized Kruskal\'s Algorithm', 
+              prim:'Randomized Prim\'s Algorithm', 
+              modified_prim:'Modified Prim\'s Algorithm', 
+              tree:'Binary Tree', 
+              eller:'Eller\'s Algorithm', 
+              sidewinder:'Sidewinder', 
+              division:'Recursive Division'}
 
 mpl.rcParams['savefig.pad_inches'] = 0
 
 frames = list()
-for algo in algorithms:
+for algo, name in algorithms.items():
     # 1 sec of title
-    frames.extend([algo.__name__.capitalize()] * 120)
+    frames.extend([name] * 120)
     
     # x secs of algorithm
     if algo.__name__ == 'division':
         frames.extend([np.copy(x) for x in algo(107, 191)])
         frames.extend([frames[-1]] * 59)
     if algo.__name__ == 'wilson':
-        frames.extend([np.copy(x) for x in algo(27, 49)])
+        stuff = [None] * 2001
+        while len(stuff) > 2000:
+            stuff = [np.copy(x) for x in algo(27, 49)]
+        frames.extend(stuff)
         frames.extend([frames[-1]] * 59)
     else:
         frames.extend([np.copy(x) for x in algo(53, 95)])

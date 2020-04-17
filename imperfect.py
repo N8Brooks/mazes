@@ -5,7 +5,7 @@ from random import randrange, random
 from noise import pnoise3
 from collections import deque
 
-import solve
+import solve_perfect
 
 def solvable(grid):
     """
@@ -20,7 +20,7 @@ def solvable(grid):
     while stack:
         i, y, x = stack.popleft()
         i += 1
-        for y2, x2 in solve.neighbors(y, x, grid):
+        for y2, x2 in solve_perfect.neighbors(y, x, grid):
             if found[y2, x2]:
                 if y2 == goal and x2 == goal:
                     return i
@@ -65,17 +65,15 @@ def splatter(size):
     """
     Create a solvable maze with approximately 1/4 cells being random walls
     """
-    solvable = False
-    while not solvable:
+    solution = 0
+    while not solution:
         grid = np.random.randint(0, 2, size=(size, size,), dtype=bool)
         grid |= np.random.randint(0, 2, size=(size, size,), dtype=bool)
         grid &= np.random.randint(0, 2, size=(size, size,), dtype=bool)
         grid[0, 0:size] = grid[size - 1, 0:size] = True
         grid[0:size, 0] = grid[0:size, size - 1] = True
         grid[1, 1] = grid[size-2, size-2] = False
-        for y, x in solve.greedy_bfs(grid):
-            pass
-        solvable = y == size - 2 and x == size - 2
+        solution = solvable(grid)
     yield grid
 
 def maze(size):
